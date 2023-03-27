@@ -11,16 +11,17 @@ using DTYPE = std::enable_if_t<std::is_default_constructible_v<T>, T>;
 
 public: // Flow Control 
 
-    void Wait() {
+    bool Wait(uint64_t timeout_ms=5000) {
         while(Empty() && !m_is_shutdown) {
             std::unique_lock lock(m_wait_mutex);
-            m_wait_cv.wait(lock);
+            m_wait_cv.wait_for(lock, std::chrono::milliseconds(timeout_ms));
         }
+        return !m_is_shutdown;
     }
 
     void WakeUp() {
         std::unique_lock lock(m_wait_mutex);
-        m_wait_cv.notify_one();
+        m_wait_cv.notify_all();
     }
 
     void Shutdown() {

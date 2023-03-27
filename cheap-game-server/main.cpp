@@ -23,12 +23,25 @@ int main(int argc, char** argv) {
     auto num_thread = parser.get<int>("--num_thread");
     spdlog::info("Cheap Game Server Running...\nTCP Port: {}\nMax Client: {}", tcp_port, max_num_client);
     
-    cgs::MainServer server;
-    spdlog::info("Run Server 0.0.0.0:{}, t:{}", tcp_port, num_thread);
-    server.Run(uint16_t(tcp_port), size_t(num_thread));
-    
-    std::this_thread::sleep_for(std::chrono::seconds(60));
-    spdlog::info("Shutdown Server");
-    server.Shutdown();
+    try {
+        cgs::MainServer server;
+        spdlog::info("Run Server 0.0.0.0:{}, t:{}", tcp_port, num_thread);
+        server.Run(uint16_t(tcp_port), size_t(num_thread));
+        
+        while (true) {
+            std::string command;
+            std::getline(std::cin, command);
+            if (command == "exit") {
+                break;
+            }
+        }
+        
+        spdlog::info("Shutdown Server");
+        server.Shutdown();
+    }
+    catch (const std::exception& e) {
+        spdlog::info("{}", e.what());
+    }
+        
     return 0;
 }

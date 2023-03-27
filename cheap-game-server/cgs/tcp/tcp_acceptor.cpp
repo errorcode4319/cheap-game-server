@@ -35,11 +35,9 @@ void Acceptor::OnAccept(
     }
     uint64_t conn_id = m_acc_count++;
     // Test 
-    msg::MessageBuffer  msg_in, msg_out;
-    auto conn = std::make_shared<Connection>(
-        conn_id, m_ios, std::move(*shared_socket.get()), msg_in, msg_out);
+    auto conn = std::make_shared<Connection>(conn_id, m_ios, std::move(*shared_socket.get()));
     
-    conn->Close();
+    m_buf_conn_out.PushBack(std::move(conn));
     this->SetupAccept();
 }
 
