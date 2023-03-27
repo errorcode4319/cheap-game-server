@@ -11,6 +11,7 @@ void Connection::Run() {
 
 void Connection::Close() {
     std::scoped_lock lock(m_status_mutex);
+    spdlog::info("TCP Connection Close => id: {}", m_id);
     m_status = TcpConnStatus::kClosed;
     if (m_socket.is_open()) {
         m_socket.cancel();

@@ -6,6 +6,8 @@ int main(int argc, char** argv) {
         .default_value(666).help("Set TCP Port").metavar("<port-num>");
     parser.add_argument("--max_conn").required().scan<'i', int>()
         .default_value(1000).help("Set limit the number of connected clients").metavar("<num-limit>");
+    parser.add_argument("--num_thread").required().scan<'i', int>()
+        .default_value(4).help("Set size of thread pool").metavar("<thread-num>");
 
     try {
         parser.parse_args(argc, argv);
@@ -18,8 +20,15 @@ int main(int argc, char** argv) {
     
     auto tcp_port = parser.get<int>("--tcp_port");
     auto max_num_client = parser.get<int>("--max_conn");
+    auto num_thread = parser.get<int>("--num_thread");
     spdlog::info("Cheap Game Server Running...\nTCP Port: {}\nMax Client: {}", tcp_port, max_num_client);
-
-
+    
+    cgs::MainServer server;
+    spdlog::info("Run Server 0.0.0.0:{}, t:{}", tcp_port, num_thread);
+    server.Run(uint16_t(tcp_port), size_t(num_thread));
+    
+    std::this_thread::sleep_for(std::chrono::seconds(60));
+    spdlog::info("Shutdown Server");
+    server.Shutdown();
     return 0;
 }
