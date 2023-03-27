@@ -1,0 +1,12 @@
+[submodule "3rdparty/spdlog-v1.11.0"]
+	path = 3rdparty/spdlog-v1.11.0
+	url = https://github.com/gabime/spdlog.git
+	branch = v1.11.0
+[submodule "3rdparty/fmt-v9.1.0"]
+	path = 3rdparty/fmt-v9.1.0
+	url = https://github.com/fmtlib/fmt.git
+	branch = 9.1.0
+[submodule "3rdparty/argparse-v2.9"]
+	path = 3rdparty/argparse-v2.9
+	url = https://github.com/p-ranav/argparse.git
+	branch = v2.9
