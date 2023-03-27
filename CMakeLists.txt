@@ -8,7 +8,7 @@ if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
-set(SRC_PATH ./cheap-game-server)
+set(SRC_PATH cheap-game-server)
 file(GLOB_RECURSE SOURCES
     ${SRC_PATH}/**.cpp
     ${SRC_PATH}/**.hpp)
@@ -18,7 +18,10 @@ add_executable(cgs ${SOURCES})
 target_include_directories(
     # Target 
     cgs PRIVATE 
-    src 
+
+    # Source Root Dir 
+    ${SRC_PATH}
+    
     # Header-Only 3rdparty libs 
     3rdparty/argparse-v2.9/include 
     3rdparty/fmt-v9.1.0/include 

@@ -1,4 +1,4 @@
-#include "util/util.hpp"
+#include <cgs/cgs.hpp>
 
 int main(int argc, char** argv) {
     argparse::ArgumentParser parser("Cheap-Game-Server", "0.1.0");
