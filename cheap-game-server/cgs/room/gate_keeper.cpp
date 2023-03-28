@@ -30,7 +30,10 @@ void GateKeeper::Process(int tid) {
             continue;
         }
         spdlog::info("Message From Client\n{}", hs_msg);
-        
+        success = conn->ReadUntilWait(hs_msg, "\n\r", '\n', timeout_ms);
+        if (success) {
+            spdlog::info("Message From Client\n{}", hs_msg);
+        }
     }
 }
 

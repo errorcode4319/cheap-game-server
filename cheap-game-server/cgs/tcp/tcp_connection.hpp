@@ -32,6 +32,7 @@ public:
     , m_socket(std::move(socket))
     , m_status(TcpConnStatus::kConnected)
     , m_last_error_message("")
+    , m_read_stream(&m_read_sbuf)
     {
         spdlog::info("New TCP Connection => ID:{}", m_id);
     }
@@ -70,9 +71,12 @@ private:
     asio::io_service&       m_ios; 
     asio::ip::tcp::socket   m_socket;
     msg::MessageBuffer      m_msg_in;
-    asio::streambuf         m_write_sbuf;
     msg::MessageBuffer      m_msg_out;
+    
     asio::streambuf         m_read_sbuf;
+    std::istream            m_read_stream;
+    std::mutex              m_read_wait_mutex;
+    std::condition_variable m_read_wait_cv;
     TcpConnStatus           m_status;
     std::mutex              m_status_mutex;
     std::string             m_last_error_message;
