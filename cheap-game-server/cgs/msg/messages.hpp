@@ -11,7 +11,7 @@ namespace types {
 enum MsgTypes: uint32_t {
 
     kNone = 0,
-    
+
     kServerConnected,
     kServerDisconnected,
 

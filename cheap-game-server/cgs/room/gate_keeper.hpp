@@ -2,8 +2,16 @@
 
 #include <common/common.hpp>
 #include <cgs/tcp/tcp_connection.hpp>
+#include <cgs/msg/handshake.hpp>
 
 namespace cgs::room {
+
+enum class GateEntryStatus {
+    kSuccess = 0,
+    kHSTimeout,
+    kHSInvalidMessage,
+    kHSInvalidClient,
+};
 
 class GateKeeper {
 
@@ -22,6 +30,8 @@ public:
 
 private:
     void Process(int tid);
+
+    GateEntryStatus Handshake(tcp::SharedConn& conn);
 
     tcp::SharedConn GetNextClientConn();
 
