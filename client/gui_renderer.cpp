@@ -1,6 +1,6 @@
 #include "gui_renderer.hpp"
 
-bool GUIRenderer::InitWindow(const std::string& title, int x, int y, int width, int height, bool center, bool fullscreen) {
+bool GUIRenderer::InitWindow(const std::string& title, int x, int y, int width, int height, Color bg_color, bool center, bool fullscreen) {
     int flags = 0;
     if (fullscreen) { 
         flags = SDL_WINDOW_FULLSCREEN; 
@@ -26,7 +26,8 @@ bool GUIRenderer::InitWindow(const std::string& title, int x, int y, int width, 
         std::cout << "Failed to create renderer" << std::endl;
         return false; 
     }
-    SDL_SetRenderDrawColor(m_renderer, 255,255,255,255);
+    SetDefaultBGColor(bg_color);
+    DrawClean();
     return true; 
 }
 
@@ -58,15 +59,48 @@ int GUIRenderer::AddFont(const std::string& fontfile, size_t fontsize) {
     return m_font_arr.size() - 1;
 }
 
+void GUIRenderer::SetDefaultBGColor(Color color) {
+    m_default_bg_color.r = color.r;
+    m_default_bg_color.g = color.g;
+    m_default_bg_color.b = color.b;
+    m_default_bg_color.a = 255;
+}
+
 void GUIRenderer::DrawBegin() {
     SDL_RenderClear(m_renderer);
     m_on_drawing = true; 
-
 }
 
 void GUIRenderer::DrawEnd() {
+    const auto&[r, g, b, a] = m_default_bg_color;
+    SDL_SetRenderDrawColor(m_renderer, r, g, b, b);
     SDL_RenderPresent(m_renderer);
     m_on_drawing = false; 
+}
+
+void GUIRenderer::DrawClean() {
+    DrawBegin();
+    DrawEnd(); 
+}
+
+bool GUIRenderer::DrawRect(Rect rect, Color color, bool fill) {
+    
+    SDL_Rect render_rect;
+    render_rect.x = rect.x;
+    render_rect.y = rect.y;
+    render_rect.w = rect.width;
+    render_rect.h = rect.height;
+
+    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, 255);
+
+    if (fill) {
+        SDL_RenderFillRect(m_renderer, &render_rect);
+    }
+    else {
+        SDL_RenderDrawRect(m_renderer, &render_rect);
+    }
+
+    return true;
 }
 
 bool GUIRenderer::DrawText(const std::string& text, Coord pt, Color color, int font_id) {

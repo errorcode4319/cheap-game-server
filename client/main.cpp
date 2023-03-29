@@ -9,7 +9,7 @@ int main(int argc, char* args[]) {
 
     GUIRenderer gui;
     // Center Enable, Fullscreen Disable
-    if (!gui.InitWindow("GUI Client", 0, 0, 1280, 740, true, false)){
+    if (!gui.InitWindow("GUI Client", 0, 0, 1280, 740)){
         std::cerr << "Failed to init gui window" << std::endl; 
         return 0;
     }  
@@ -26,6 +26,7 @@ int main(int argc, char* args[]) {
     gui.DrawBegin();
     
     gui.DrawText("Test", {10, 10});
+    gui.DrawRect(Rect{100, 100, 100, 100}, Color{255, 0, 0}, true);
     
     gui.DrawEnd();
 
