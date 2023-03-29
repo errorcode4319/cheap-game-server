@@ -12,15 +12,12 @@ int main(int argc, char* args[]) {
     gui.InitFont();
     auto font_id = gui.AddFont("./Consolas.ttf", 16);
     if (font_id == -1) return 0;
-    g_is_running = true;
 
-    while(g_is_running) {
+    gui.DrawBegin();
+    gui.DrawText(font_id, "Test", 10, 10);
+    gui.DrawEnd();
 
-        gui.RenderBegin();
-        gui.RenderText(font_id, "Test", 10, 10);
-        gui.RenderEnd();
-    
-    }
+    SDL_Delay(3000);
 
     return 0;
 }

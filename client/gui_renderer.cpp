@@ -45,18 +45,18 @@ int GUIRenderer::AddFont(const std::string& fontfile, size_t fontsize) {
     return m_font_arr.size() - 1;
 }
 
-void GUIRenderer::RenderBegin() {
+void GUIRenderer::DrawBegin() {
     SDL_RenderClear(m_renderer);
-    m_on_render = true; 
+    m_on_drawing = true; 
 
 }
 
-void GUIRenderer::RenderEnd() {
+void GUIRenderer::DrawEnd() {
     SDL_RenderPresent(m_renderer);
-    m_on_render = false; 
+    m_on_drawing = false; 
 }
 
-bool GUIRenderer::RenderText(int font_id, const std::string& text, int x, int y, SDL_Color color) {
+bool GUIRenderer::DrawText(int font_id, const std::string& text, int x, int y, SDL_Color color) {
     if (m_font_arr.size() <= font_id) {
         std::cerr << "Invalid Font ID" << std::endl;
         return false;
