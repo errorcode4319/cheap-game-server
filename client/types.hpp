@@ -17,3 +17,16 @@ struct Color {
     uint8_t g = 0;
     uint8_t b = 0;
 };
+
+struct Rect {
+    int x;
+    int y;
+    int width;
+    int height;
+};
+
+struct Circle {
+    int x;
+    int y;
+    int radius;
+};

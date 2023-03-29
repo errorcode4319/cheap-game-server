@@ -1,20 +1,32 @@
 #include "gui_renderer.hpp"
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+constexpr int kScreenWidth = 640;
+constexpr int kScreenHeight = 480;
 
 bool g_is_running = false;
 
 int main(int argc, char* args[]) {
 
     GUIRenderer gui;
-    gui.InitWindow("GUI Client", 0, 0, 640, 480, false);
-    gui.InitFont();
-    auto font_id = gui.AddFont("./Consolas.ttf", 16);
-    if (font_id == -1) return 0;
+    // Center Enable, Fullscreen Disable
+    if (!gui.InitWindow("GUI Client", 0, 0, 1280, 740, true, false)){
+        std::cerr << "Failed to init gui window" << std::endl; 
+        return 0;
+    }  
+    if (!gui.InitFont()) {
+        std::cerr << "Failed to init font" << std::endl; 
+        return 0;
+    }
+    if (!gui.SetDefaultFont("./Consolas.ttf", 32)) {
+        std::cerr << "Failed to set default font" << std::endl;
+        return 0;
+    }
+    
 
     gui.DrawBegin();
-    gui.DrawText(font_id, "Test", 10, 10);
+    
+    gui.DrawText("Test", {10, 10});
+    
     gui.DrawEnd();
 
     SDL_Delay(3000);

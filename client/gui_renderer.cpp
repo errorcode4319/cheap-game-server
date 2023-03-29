@@ -1,8 +1,14 @@
 #include "gui_renderer.hpp"
 
-bool GUIRenderer::InitWindow(const std::string& title, int x, int y, int width, int height, bool fullscreen) {
+bool GUIRenderer::InitWindow(const std::string& title, int x, int y, int width, int height, bool center, bool fullscreen) {
     int flags = 0;
-    if (fullscreen) { flags = SDL_WINDOW_FULLSCREEN; }
+    if (fullscreen) { 
+        flags = SDL_WINDOW_FULLSCREEN; 
+    }
+    if (center) {
+        x = SDL_WINDOWPOS_CENTERED; 
+        y = SDL_WINDOWPOS_CENTERED; 
+    }
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "Failed to init sdl" << std::endl;
@@ -21,7 +27,6 @@ bool GUIRenderer::InitWindow(const std::string& title, int x, int y, int width, 
         return false; 
     }
     SDL_SetRenderDrawColor(m_renderer, 255,255,255,255);
-
     return true; 
 }
 
@@ -33,6 +38,14 @@ bool GUIRenderer::InitFont() {
     return true;
 }
 
+bool GUIRenderer::SetDefaultFont(const std::string& fontfile, size_t fontsize) {
+    auto font_id = AddFont(fontfile, fontsize);
+    if (font_id == -1) {
+        return false; 
+    }
+    m_default_font_id = font_id;
+    return true; 
+}
 
 int GUIRenderer::AddFont(const std::string& fontfile, size_t fontsize) {
     TTF_Font* p_font = TTF_OpenFont(fontfile.c_str(), fontsize);
@@ -56,13 +69,25 @@ void GUIRenderer::DrawEnd() {
     m_on_drawing = false; 
 }
 
-bool GUIRenderer::DrawText(int font_id, const std::string& text, int x, int y, SDL_Color color) {
-    if (m_font_arr.size() <= font_id) {
-        std::cerr << "Invalid Font ID" << std::endl;
+bool GUIRenderer::DrawText(const std::string& text, Coord pt, Color color, int font_id) {
+    // User Default Font
+    if (font_id == -1) {
+        font_id = m_default_font_id;
+        if (font_id == -1) {
+            std::cerr << "Failed to set font, no default font" << std::endl;
+            return false; 
+        }
+    }
+
+    const auto& [x, y] = pt;
+    if (m_font_arr.size() <= font_id || font_id < 0) {
+        std::cerr << "failed to set font, invalid font id" << std::endl;
         return false;
     }
     auto font = m_font_arr[font_id];
-    SDL_Surface* p_text_surface = TTF_RenderText_Blended(font, text.c_str(), color);
+    const auto&[r, g, b] = color;
+    SDL_Color text_fg_rgb{r, g, b};
+    SDL_Surface* p_text_surface = TTF_RenderText_Blended(font, text.c_str(), text_fg_rgb);
     if (p_text_surface == nullptr) {
         std::cerr << "Failed to create Text Surface" << std::endl;
         return false;

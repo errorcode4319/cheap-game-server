@@ -14,15 +14,16 @@ public:
     GUIRenderer() {};
     ~GUIRenderer() { Release(); };
 
-    bool InitWindow(const std::string& title, int x, int y, int width, int height, bool fullscreen);
+    bool InitWindow(const std::string& title, int x, int y, int width, int height, bool center, bool fullscreen);
     
     bool InitFont();
+    bool SetDefaultFont(const std::string& fontfile, size_t fontsize);
     int AddFont(const std::string& fontfile, size_t fontsize);
     
     void DrawBegin();
     void DrawEnd();
 
-    bool DrawText(int font_id, const std::string& text, int x, int y, SDL_Color color = {0, 0, 0});
+    bool DrawText(const std::string& text, Coord pt, Color color = {0, 0, 0}, int font_id = -1); // Use Default Font, if font_id = -1 
 
     bool OnDrawing() const { return m_on_drawing; }
 
@@ -31,6 +32,7 @@ public:
 private:
     bool                    m_on_drawing = false;
     std::vector<TTF_Font*>  m_font_arr;
+    int                     m_default_font_id = -1;
     SDL_Window*             m_window;
     SDL_Renderer*           m_renderer;
 
