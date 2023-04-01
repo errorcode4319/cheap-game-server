@@ -85,22 +85,39 @@ void GUIRenderer::DrawClean() {
 
 bool GUIRenderer::DrawRect(Rect rect, Color color, bool fill) {
     
-    SDL_Rect render_rect;
-    render_rect.x = rect.x;
-    render_rect.y = rect.y;
-    render_rect.w = rect.width;
-    render_rect.h = rect.height;
+    const auto&[x, y, w, h] = rect;
+    const auto&[r, g, b] = color;
+    auto a = 255;
+    int err = 0;
 
-    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, 255);
+    SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
 
     if (fill) {
-        SDL_RenderFillRect(m_renderer, &render_rect);
+        err = boxRGBA(m_renderer, Sint16(x), Sint16(y), Sint16(x+w), Sint16(y+h), r, g, b, a);
     }
     else {
-        SDL_RenderDrawRect(m_renderer, &render_rect);
+        err = rectangleRGBA(m_renderer, Sint16(x), Sint16(y), Sint16(x+w), Sint16(y+h), r, g, b, a);
     }
 
-    return true;
+    return err == 0;
+}
+
+bool GUIRenderer::DrawCircle(Circle circle, Color color, bool fill) {
+    const auto&[x, y, rad] = circle;
+    const auto&[r, g, b] = color;
+    auto a = 255;
+    int err = 0;
+
+    SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
+
+    if (fill) {
+        err = filledCircleRGBA(m_renderer,Sint16(x), Sint16(y), Sint16(rad), r, g, b, a);
+    }
+    else {
+        err = circleRGBA(m_renderer,Sint16(x), Sint16(y), Sint16(rad), r, g, b, a);
+    }
+
+    return err == 0;
 }
 
 bool GUIRenderer::DrawText(const std::string& text, Coord pt, Color color, int font_id) {

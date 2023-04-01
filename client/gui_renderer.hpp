@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 #include <vector>
 #include <cstdint>
 #include <iostream>
@@ -26,9 +27,8 @@ public:
     void DrawClean();
 
     bool DrawRect(Rect rect, Color color, bool fill = false);
-
+    bool DrawCircle(Circle circle, Color color, bool fill = false);
     bool DrawText(const std::string& text, Coord pt, Color color = {0, 0, 0}, int font_id = -1); // Use Default Font, if font_id = -1 
-
     bool OnDrawing() const { return m_on_drawing; }
 
     void Release(); 

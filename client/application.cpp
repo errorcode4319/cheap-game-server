@@ -51,6 +51,7 @@ bool Application::Render() {
     
     m_gui.DrawText("Test", {10, 10});
     m_gui.DrawRect(Rect{100, 100, 100, 100}, Color{255, 0, 0}, true);
+    m_gui.DrawCircle(Circle{300, 300, 50}, Color{0, 255, 0}, true);
     
     m_gui.DrawEnd();
 

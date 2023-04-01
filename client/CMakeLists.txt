@@ -14,4 +14,5 @@ target_link_libraries(
     client PRIVATE 
     ${SDL2_LIBRARIES}
     /usr/lib/x86_64-linux-gnu/libSDL2_ttf.so
+    /usr/lib/x86_64-linux-gnu/libSDL2_gfx.so
 )
