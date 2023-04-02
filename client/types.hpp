@@ -2,6 +2,11 @@
 
 #include <cstdint>
 
+struct Vector2f {
+    float x;
+    float y;
+};
+
 struct Coord {
     int x = 0;
     int y = 0;

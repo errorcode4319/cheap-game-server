@@ -2,6 +2,7 @@
 
 #include "gui_renderer.hpp"
 #include "types.hpp"
+#include "player.hpp"
 
 class Application {
 
