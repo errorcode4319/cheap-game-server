@@ -11,7 +11,7 @@ Application::~Application() {
 
 bool Application::Init() {
     // Center Enable, Fullscreen Disable
-    if (!m_gui.InitWindow("GUI Client", 0, 0, 1280, 740)){
+    if (!m_gui.InitWindow("GUI Client", 0, 0, m_frame_width, m_frame_height)){
         std::cerr << "Failed to init gui window" << std::endl; 
         return false;
     }  
@@ -23,36 +23,39 @@ bool Application::Init() {
         std::cerr << "Failed to set default font" << std::endl;
         return false;
     }
+
+    m_player_info_font = m_gui.AddFont("./Consolas.ttf", 20);
+    InitPlayerList();
+
     return true;
 }
 
 bool Application::Update() {
-    PollUserEvents();
+    m_events.Update(); 
+
+
 
     return true; 
 }
 
-void Application::PollUserEvents() {
-    while (SDL_PollEvent(&m_event)) {
-        switch(m_event.type) {
-
-        case SDL_QUIT:
-            m_on_quit = true;
-            return;
-
-
-
-        }
-    }
-}
-
 bool Application::Render() {
     m_gui.DrawBegin();
+
+    auto draw_player = [this] (const Player& p) {
+        std::stringstream info; info << "Player ID: " << p.GetId();
+        auto[fx, fy] = p.GetPos();
+        auto rad = p.GetRenderRadian();
+        auto color = p.GetRenderColor();
+        m_gui.DrawText(info.str(), Coord{int(fx - rad), int(fy - rad - 15)}, Color{0, 0, 0}, m_player_info_font);
+        m_gui.DrawCircle(Circle{int(fx), int(fy), int(rad)}, color, true);
+    };
     
-    m_gui.DrawText("Test", {10, 10});
-    m_gui.DrawRect(Rect{100, 100, 100, 100}, Color{255, 0, 0}, true);
-    m_gui.DrawCircle(Circle{300, 300, 50}, Color{0, 255, 0}, true);
+    m_gui.DrawText("[SPACE] - Player Select", {10, 10});
     
+    for(const auto& p: m_player_list) {
+        draw_player(p);
+    }
+
     m_gui.DrawEnd();
 
     return true; 
@@ -67,5 +70,39 @@ bool Application::Wait() {
     if (m_on_error) {
         return false; 
     }
-    return !m_on_quit;
+    return !m_events.OnQuit();
+}
+
+namespace {
+
+std::random_device rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<int> dis(0, 9999);
+
+}
+
+
+void Application::InitPlayerList() {
+    auto gen_init_pos = [this](int inner_offset) -> Vector2f {
+        int x = inner_offset + dis(gen) % (m_frame_width - inner_offset * 2);
+        int y = inner_offset + dis(gen) % (m_frame_height - inner_offset * 2);
+        return Vector2f{float(x), float(y)};
+    };
+
+    for(int i = 0;i < m_max_player; i++) {
+        Player p(i);
+        p.SetPos(gen_init_pos(100));
+        p.SetRenderRadian(20);
+        p.SetRenderColor(Color{50, 50, 50});
+        m_player_list.emplace_back(std::move(p));
+    }
+
+    m_cur_player = m_max_player - 1;
+    SelectNextPlayer();
+}
+
+void Application::SelectNextPlayer() {
+    m_player_list[m_cur_player].SetRenderColor({50, 50, 50});
+    m_cur_player = (m_cur_player + 1) % m_max_player;
+    m_player_list[m_cur_player].SetRenderColor({255, 0, 0});
 }
