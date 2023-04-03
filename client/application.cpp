@@ -33,7 +33,7 @@ bool Application::Init() {
 bool Application::Update() {
     m_events.Update(); 
 
-
+    UpdatePlayerList();
 
     return true; 
 }
@@ -99,6 +99,27 @@ void Application::InitPlayerList() {
 
     m_cur_player = m_max_player - 1;
     SelectNextPlayer();
+}
+
+void Application::UpdatePlayerList() {
+
+    if (m_events.GetKeyState(' ') & KeyState::kPress) {
+        SelectNextPlayer(); 
+    }
+
+    auto& p = m_player_list[m_cur_player];
+    if (m_events.CheckKeyState('w', KeyState::kHold)) {
+        m_player_list[m_cur_player].MoveY(5.0);
+    }
+    if (m_events.CheckKeyState('s', KeyState::kHold)) {
+        m_player_list[m_cur_player].MoveY(-5.0);
+    }
+    if (m_events.CheckKeyState('a', KeyState::kHold)) {
+        m_player_list[m_cur_player].MoveX(5.0);
+    }
+    if (m_events.CheckKeyState('d', KeyState::kHold)) {
+        m_player_list[m_cur_player].MoveX(-5.0);
+    }
 }
 
 void Application::SelectNextPlayer() {

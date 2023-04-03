@@ -27,6 +27,7 @@ public:
 
 private:
     void InitPlayerList();
+    void UpdatePlayerList();
     void SelectNextPlayer();
 
     void Error(const std::string& error_message) {
